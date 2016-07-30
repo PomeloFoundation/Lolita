@@ -10,7 +10,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
     {
         public virtual string TranslateToSql(OperationInfo operation)
         {
-            switch(operation.Type)
+            switch (operation.Type)
             {
                 case "WIthValue":
                     return $"SET {operation.Field} = {{{ operation.Index }}}";
@@ -25,23 +25,23 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "Mod":
                     return $"SET {operation.Field} = {operation.Field} % {{{ operation.Index }}}";
                 case "Append":
-                    return $"SET {operation.Field} = CONCAT({operation.Field}, {{{operation.Index}}})";
+                    return $"SET {operation.Field} = '{operation.Field}'||'{{{operation.Index}}}'";
                 case "Prepend":
-                    return $"SET {operation.Field} = CONCAT({{{operation.Index}}}, {operation.Field})";
+                    return $"SET {operation.Field} = '{{{operation.Index}}}'||'{operation.Field}'";
                 case "AddMilliseconds":
-                    return $"SET {operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} microsecond)";
+                    throw new NotImplementedException();
                 case "AddSeconds":
-                    return $"SET {operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} second)";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Seconds'";
                 case "AddMinutes":
-                    return $"SET {operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} minute)";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Minutes'";
                 case "AddHours":
-                    return $"SET {operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} hour)";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Hours'";
                 case "AddDays":
-                    return $"SET {operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} day)";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Days'";
                 case "AddMonths":
-                    return $"SET {operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} month)";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Months '";
                 case "AddYears":
-                    return $"SET {operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} year)";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Years'";
             }
             return string.Empty;
         }
