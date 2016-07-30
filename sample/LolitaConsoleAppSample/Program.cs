@@ -16,7 +16,7 @@ namespace LolitaConsoleAppSample
             collection.AddDbContext<LolitaContext>(x => 
             {
                 x.UseMySql("server=localhost;database=lolita;uid=root;pwd=19931101");
-                x.UseLolita();
+                x.UseMySqlLolita();
             });
             var services = collection.BuildServiceProvider();
             var db = services.GetRequiredService<LolitaContext>();
