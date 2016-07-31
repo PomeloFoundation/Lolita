@@ -15,7 +15,7 @@ namespace Microsoft.EntityFrameworkCore
 {
     public static class UpdateExtensions
     {
-        private static string GenerateBulkUpdateSql<TEntity>(this LolitaSetting<TEntity> self)
+        public static string GenerateBulkUpdateSql<TEntity>(this LolitaSetting<TEntity> self)
             where TEntity : class, new()
         {
             var modelVisitor = self.Query.CompileQuery();

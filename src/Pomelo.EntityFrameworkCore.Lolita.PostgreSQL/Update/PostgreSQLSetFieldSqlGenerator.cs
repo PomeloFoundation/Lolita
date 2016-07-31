@@ -11,7 +11,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
         {
             switch (operation.Type)
             {
-                case "WIthValue":
+                case "WithValue":
                     return $"SET {operation.Field} = {{{ operation.Index }}}";
                 case "Plus":
                     return $"SET {operation.Field} = {operation.Field} + {{{ operation.Index }}}";

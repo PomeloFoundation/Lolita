@@ -26,6 +26,7 @@ namespace LolitaConsoleAppSample
                 .Where(x => x.Title == "Hello' World")
                 .Where(x => DateTime.Now >= x.Time)
                 .SetField(x => x.Title).Prepend("[old] ")
+                .SetField(x => x.IsPinned).WithValue(true)
                 .Update();
 
             Console.WriteLine();

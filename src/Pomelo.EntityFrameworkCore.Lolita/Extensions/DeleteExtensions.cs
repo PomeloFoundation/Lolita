@@ -15,7 +15,7 @@ namespace Microsoft.EntityFrameworkCore
 {
     public static class DeleteExtensions
     {
-        private static string GenerateBulkDeleteSql<TEntity>(this IQueryable<TEntity> self)
+        public static string GenerateBulkDeleteSql<TEntity>(this IQueryable<TEntity> self)
             where TEntity : class, new()
         {
             var modelVisitor = self.CompileQuery();
