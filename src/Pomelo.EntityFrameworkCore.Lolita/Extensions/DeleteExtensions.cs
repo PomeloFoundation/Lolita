@@ -21,7 +21,7 @@ namespace Microsoft.EntityFrameworkCore
             var modelVisitor = self.CompileQuery();
             var executor = self.GetService<ILolitaDeleteExecutor>();
             var sql = executor.GenerateSql(self, modelVisitor);
-            self.GetService<ILogger>().LogInformation(sql);
+            self.GetService<ILoggerFactory>().CreateLogger("Lolita Bulk Deleting").LogInformation(sql);
             return sql;
         }
 

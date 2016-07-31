@@ -21,7 +21,7 @@ namespace Microsoft.EntityFrameworkCore
             var modelVisitor = self.Query.CompileQuery();
             var executor = self.Query.GetService<ILolitaUpdateExecutor>();
             var sql = executor.GenerateSql(self, modelVisitor);
-            self.Query.GetService<ILogger>().LogInformation(sql);
+            self.GetService<ILoggerFactory>().CreateLogger("Lolita Bulk Updating").LogInformation(sql);
             return sql;
         }
 
