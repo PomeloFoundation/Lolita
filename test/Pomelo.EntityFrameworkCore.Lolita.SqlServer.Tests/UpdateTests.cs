@@ -24,7 +24,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.SqlServer.Tests
                 Assert.Equal(@"UPDATE [Posts]
 SET [Posts].[IsPinned] = {0}, 
     [Posts].[IsHighlighted] = {1}
-WHERE [Posts].[Id] = 1;", sql);
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -40,7 +40,7 @@ WHERE [Posts].[Id] = 1;", sql);
 
                 Assert.Equal(@"UPDATE [Posts]
 SET [Posts].[PV] = [Posts].[PV] + {0}
-WHERE [Posts].[Id] = 1;", sql);
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -72,7 +72,7 @@ WHERE [Posts].[Time] <= '") >= 0);
 
                 Assert.Equal(@"UPDATE [Users]
 SET [Users].[RememberMeExpire] = DATEADD(dd, {0}, [Users].[RememberMeExpire])
-WHERE [Users].[Id] = 1;", sql);
+WHERE [Users].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -95,7 +95,7 @@ WHERE [Users].[Id] IN (
     SELECT [y].[Id]
     FROM [Posts] AS [y]
     WHERE (([y].[IsHighlighted] = 1) OR ([y].[IsPinned] = 1)) AND ([y].[Time] >= '2016-01-01T00:00:00.000')
-) AND ([Users].[Role] = 0);", sql);
+) AND ([Users].[Role] = 0);", sql, false, true, false);
             }
         }
     }

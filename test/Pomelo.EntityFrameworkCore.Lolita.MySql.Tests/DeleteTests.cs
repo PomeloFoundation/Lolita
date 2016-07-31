@@ -18,7 +18,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.MySql.Tests
                     .GenerateBulkDeleteSql();
 
                 Assert.Equal(@"DELETE FROM `Posts`
-WHERE `Posts`.`Id` = 1;", sql);
+WHERE `Posts`.`Id` = 1;", sql, false, true, false);
             }
         }
         
@@ -38,7 +38,7 @@ WHERE ((
     SELECT CAST(COUNT(*) AS UNSIGNED)
     FROM `Posts` AS `y`
     WHERE `y`.`UserId` = `Users`.`Id`
-) = 0) AND (`Users`.`Role` = 0);", sql);
+) = 0) AND (`Users`.`Role` = 0);", sql, false, true, false);
             }
         }
     }

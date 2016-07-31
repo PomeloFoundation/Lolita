@@ -20,7 +20,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.SqlServer.Tests
                     .GenerateBulkDeleteSql();
 
                 Assert.Equal(@"DELETE FROM [Posts]
-WHERE [Posts].[Id] = 1;", sql);
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -40,7 +40,7 @@ WHERE ((
     SELECT COUNT(*)
     FROM [Posts] AS [y]
     WHERE [y].[UserId] = [Users].[Id]
-) = 0) AND ([Users].[Role] = 0);", sql);
+) = 0) AND ([Users].[Role] = 0);", sql, false, true, false);
             }
         }
     }

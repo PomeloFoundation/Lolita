@@ -22,7 +22,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.MySql.Tests
                 Assert.Equal(@"UPDATE `Posts`
 SET `Posts`.`IsPinned` = {0}, 
     `Posts`.`IsHighlighted` = {1}
-WHERE `Posts`.`Id` = 1;", sql);
+WHERE `Posts`.`Id` = 1;", sql, false, true, false);
             }
         }
 
@@ -38,7 +38,7 @@ WHERE `Posts`.`Id` = 1;", sql);
 
                 Assert.Equal(@"UPDATE `Posts`
 SET `Posts`.`PV` = `Posts`.`PV` + {0}
-WHERE `Posts`.`Id` = 1;", sql);
+WHERE `Posts`.`Id` = 1;", sql, false, true, false);
             }
         }
 
@@ -71,7 +71,7 @@ WHERE `Posts`.`Time` <= '") >= 0);
 
                 Assert.Equal(@"UPDATE `Users`
 SET `Users`.`RememberMeExpire` = DATE_ADD(`Users`.`RememberMeExpire`, INTERVAL {0} day)
-WHERE `Users`.`Id` = 1;", sql);
+WHERE `Users`.`Id` = 1;", sql, false, true, false);
             }
         }
 
@@ -93,7 +93,7 @@ WHERE `Users`.`Id` IN (
     SELECT `y`.`Id`
     FROM `Posts` AS `y`
     WHERE ((`y`.`IsHighlighted` = TRUE) OR (`y`.`IsPinned` = TRUE)) AND (`y`.`Time` >= '2016-01-01 00:00:00.0000000')
-) AND (`Users`.`Role` = 0);", sql);
+) AND (`Users`.`Role` = 0);", sql, false, true, false);
             }
         }
     }
