@@ -30,17 +30,17 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "AddMilliseconds":
                     throw new NotImplementedException();
                 case "AddSeconds":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Seconds'";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value } Seconds'";
                 case "AddMinutes":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Minutes'";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Minutes'";
                 case "AddHours":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Hours'";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Hours'";
                 case "AddDays":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Days'";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Days'";
                 case "AddMonths":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Months '";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Months'";
                 case "AddYears":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Years'";
+                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Years'";
             }
             return string.Empty;
         }
