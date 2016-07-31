@@ -56,7 +56,7 @@ WHERE [Posts].[Id] = 1;", sql, false, true, false);
 
                 Assert.Equal(@"UPDATE [Posts]
 SET [Posts].[Title] = {0}+[Posts].[Title]
-WHERE [Posts].[Time] <= GETDATE();", sql);
+WHERE [Posts].[Time] <= GETDATE();", sql, false, true, false);
             }
         }
 

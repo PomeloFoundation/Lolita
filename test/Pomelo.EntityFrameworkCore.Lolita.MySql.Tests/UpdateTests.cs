@@ -54,7 +54,7 @@ WHERE `Posts`.`Id` = 1;", sql, false, true, false);
                 
                 Assert.Equal(@"UPDATE `Posts`
 SET `Posts`.`Title` = CONCAT({0}, `Posts`.`Title`)
-WHERE `Posts`.`Time` <= NOW();", sql);
+WHERE `Posts`.`Time` <= NOW();", sql, false, true, false);
             }
         }
 
