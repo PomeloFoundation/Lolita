@@ -23,6 +23,7 @@ namespace LolitaConsoleAppSample
             Console.WriteLine("** Bulk updating **");
             var row_updated = db.Articles
                 .Where(x => x.Id <= 10)
+                .Where(x => x.Title == "Hello' World")
                 .Where(x => DateTime.Now >= x.Time)
                 .SetField(x => x.Title).Prepend("[old] ")
                 .Update();
