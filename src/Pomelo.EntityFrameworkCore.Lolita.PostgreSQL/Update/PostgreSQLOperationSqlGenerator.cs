@@ -24,9 +24,9 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "Mod":
                     return $"SET {operation.Field} = {operation.Field} % {{{ operation.Index }}}";
                 case "Append":
-                    return $"SET {operation.Field} = '{operation.Field}'||'{{{operation.Index}}}'";
+                    return $"SET {operation.Field} = {operation.Field} || {{{operation.Index}}}";
                 case "Prepend":
-                    return $"SET {operation.Field} = '{{{operation.Index}}}'||'{operation.Field}'";
+                    return $"SET {operation.Field} = {{{operation.Index}}} || {operation.Field}";
                 case "AddMilliseconds":
                     throw new NotImplementedException();
                 case "AddSeconds":
