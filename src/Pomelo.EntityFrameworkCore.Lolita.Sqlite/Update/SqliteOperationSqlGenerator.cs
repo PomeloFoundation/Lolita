@@ -24,23 +24,41 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "Mod":
                     return $"SET {operation.Field} = {operation.Field} % {{{ operation.Index }}}";
                 case "Append":
-                    return $"SET {operation.Field} = '{operation.Field}'||'{{{operation.Index}}}'";
+                    return $"SET {operation.Field} = {operation.Field} || {{{operation.Index}}}";
                 case "Prepend":
-                    return $"SET {operation.Field} = '{{{operation.Index}}}'||'{operation.Field}'";
+                    return $"SET {operation.Field} = {{{operation.Index}}} || {operation.Field}";
                 case "AddMilliseconds":
-                    throw new NotImplementedException();
+                    throw new NotSupportedException("Sqlite does not support million seconds operation of a datetime type.");
                 case "AddSeconds":
-                    return $"SET {operation.Field} = date({operation.Field},'NNN.NNNN seconds', {{{operation.Index}}})";
+                    if (Convert.ToInt64(operation.Value) > 0)
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '+{ operation.Value } SECONDS')";
+                    else
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '{ operation.Value } SECONDS')";
                 case "AddMinutes":
-                    return $"SET {operation.Field} = date({operation.Field},'NNN minutes', {{{operation.Index}}})";
+                    if (Convert.ToInt64(operation.Value) > 0)
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '+{ operation.Value } MINUTES')";
+                    else
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '{ operation.Value } MINUTES')";
                 case "AddHours":
-                    return $"SET {operation.Field} = date({operation.Field},'NNN hours', {{{operation.Index}}})";
+                    if (Convert.ToInt64(operation.Value) > 0)
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '+{ operation.Value } HOURS')";
+                    else
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '{ operation.Value } HOURS')";
                 case "AddDays":
-                    return $"SET {operation.Field} = date({operation.Field},'NNN days', {{{operation.Index}}})";
+                    if (Convert.ToInt64(operation.Value) > 0)
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '+{ operation.Value } DAYS')";
+                    else
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '{ operation.Value } DAYS')";
                 case "AddMonths":
-                    return $"SET {operation.Field} = date({operation.Field},'NNN months', {{{operation.Index}}})";
+                    if (Convert.ToInt64(operation.Value) > 0)
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '+{ operation.Value } MONTHS')";
+                    else
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '{ operation.Value } MONTHS')";
                 case "AddYears":
-                    return $"SET {operation.Field} = date({operation.Field},'NNN years', {{{operation.Index}}})";
+                    if (Convert.ToInt64(operation.Value) > 0)
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '+{ operation.Value } YEARS')";
+                    else
+                        return $"SET {operation.Field} = DATETIME({operation.Field}, '{ operation.Value } YEARS')";
             }
             return string.Empty;
         }
