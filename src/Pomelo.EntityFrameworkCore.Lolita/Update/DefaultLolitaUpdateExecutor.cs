@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             sb.Append(lolita.Table)
                 .AppendLine()
                 .Append("SET ")
-                .Append(string.Join(", \r\n    ", lolita.Operations))
+                .Append(string.Join($", { Environment.NewLine }    ", lolita.Operations))
                 .AppendLine()
                 .Append(ParseWhere(visitor, lolita.Table))
                 .Append(sqlGenerationHelper.StatementTerminator);
