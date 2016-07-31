@@ -27,9 +27,9 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "Prepend":
                     return $"{operation.Field} = {{{operation.Index}}}+{operation.Field}";
                 case "AddMilliseconds":
-                    return $"{operation.Field} = DATEADD(ss, {{{operation.Index}}}, {operation.Field})";
-                case "AddSeconds":
                     return $"{operation.Field} = DATEADD(ms, {{{operation.Index}}}, {operation.Field})";
+                case "AddSeconds":
+                    return $"{operation.Field} = DATEADD(ss, {{{operation.Index}}}, {operation.Field})";
                 case "AddMinutes":
                     return $"{operation.Field} = DATEADD(mi, {{{operation.Index}}}, {operation.Field})";
                 case "AddHours":
