@@ -54,9 +54,9 @@ WHERE [Posts].[Id] = 1;", sql, false, true, false);
                     .Where(x => x.Time <= time)
                     .SetField(x => x.Title).Prepend("[Old] ")
                     .GenerateBulkUpdateSql();
-                Assert.True(sql.IndexOf(@"UPDATE [Posts]
+                Assert.True(sql.Replace("\r\n", "\n").IndexOf(@"UPDATE [Posts]
 SET [Posts].[Title] = {0}+[Posts].[Title]
-WHERE [Posts].[Time] <= '") >= 0);
+WHERE [Posts].[Time] <= '".Replace("\r\n", "\n")) >= 0);
             }
         }
 
