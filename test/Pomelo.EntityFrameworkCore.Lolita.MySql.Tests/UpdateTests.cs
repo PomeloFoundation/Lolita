@@ -47,15 +47,14 @@ WHERE `Posts`.`Id` = 1;", sql, false, true, false);
         {
             using (var db = new MySqlContext())
             {
-                var time = DateTime.Now.AddDays(-30);
                 var sql = db.Posts
-                    .Where(x => x.Time <= time)
+                    .Where(x => x.Time <= DateTime.Now)
                     .SetField(x => x.Title).Prepend("[Old] ")
                     .GenerateBulkUpdateSql();
-
-                Assert.True(sql.IndexOf(@"UPDATE `Posts`
+                
+                Assert.Equal(@"UPDATE `Posts`
 SET `Posts`.`Title` = CONCAT({0}, `Posts`.`Title`)
-WHERE `Posts`.`Time` <= '") >= 0);
+WHERE `Posts`.`Time` <= NOW();", sql);
             }
         }
 

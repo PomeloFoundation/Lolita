@@ -49,14 +49,14 @@ WHERE [Posts].[Id] = 1;", sql, false, true, false);
         {
             using (var db = new SqlServerContext())
             {
-                var time = DateTime.Now.AddDays(-30);
                 var sql = db.Posts
-                    .Where(x => x.Time <= time)
+                    .Where(x => x.Time <= DateTime.Now)
                     .SetField(x => x.Title).Prepend("[Old] ")
                     .GenerateBulkUpdateSql();
-                Assert.True(sql.Replace("\r\n", "\n").IndexOf(@"UPDATE [Posts]
+
+                Assert.Equal(@"UPDATE [Posts]
 SET [Posts].[Title] = {0}+[Posts].[Title]
-WHERE [Posts].[Time] <= '".Replace("\r\n", "\n")) >= 0);
+WHERE [Posts].[Time] <= GETDATE();", sql);
             }
         }
 
