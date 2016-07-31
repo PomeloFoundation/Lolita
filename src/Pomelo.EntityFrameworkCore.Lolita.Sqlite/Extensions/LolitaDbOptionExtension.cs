@@ -10,7 +10,7 @@ namespace Microsoft.EntityFrameworkCore
         public void ApplyServices(IServiceCollection services)
         {
             services
-                .AddScoped<IOperationSqlGenerator, SqliteOperationSqlGenerator>();
+                .AddScoped<ISetFieldSqlGenerator, SqliteSetFieldSqlGenerator>();
         }
     }
 

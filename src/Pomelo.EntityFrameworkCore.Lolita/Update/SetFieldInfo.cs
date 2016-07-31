@@ -1,6 +1,6 @@
 ﻿namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public class OperationInfo
+    public class SetFieldInfo
     {
         public string Field { get; set; }
 

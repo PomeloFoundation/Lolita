@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public class SqlServerOperationSqlGenerator : IOperationSqlGenerator
+    public class SqlServerSetFieldSqlGenerator : DefaultSetFieldSqlGenerator
     {
-        public virtual string TranslateToSql(OperationInfo operation)
+        public SqlServerSetFieldSqlGenerator(ISqlGenerationHelper x) : base(x) { }
+
+        public override string TranslateToSql(SetFieldInfo operation)
         {
             switch (operation.Type)
             {

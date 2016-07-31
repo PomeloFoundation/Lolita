@@ -11,7 +11,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             services
                 .AddScoped<IFieldParser, DefaultFieldParser>()
-                .AddScoped<IOperationSqlGenerator, DefaultOperationSqlGenerator>()
+                .AddScoped<ISetFieldSqlGenerator, DefaultSetFieldSqlGenerator>()
                 .AddScoped<ILolitaUpdateExecutor, DefaultLolitaUpdateExecutor>()
                 .AddScoped<ILolitaDeleteExecutor, DefaultLolitaDeleteExecutor>();
         }

@@ -1,8 +1,17 @@
-﻿namespace Pomelo.EntityFrameworkCore.Lolita.Update
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public class DefaultOperationSqlGenerator : IOperationSqlGenerator
+    public class DefaultSetFieldSqlGenerator : ISetFieldSqlGenerator
     {
-        public virtual string TranslateToSql(OperationInfo operation)
+        public DefaultSetFieldSqlGenerator(ISqlGenerationHelper SqlGenerationHelper)
+        {
+            sqlGenerationHelper = SqlGenerationHelper;
+        }
+
+        protected ISqlGenerationHelper sqlGenerationHelper;
+
+        public virtual string TranslateToSql(SetFieldInfo operation)
         {
             switch(operation.Type)
             {
