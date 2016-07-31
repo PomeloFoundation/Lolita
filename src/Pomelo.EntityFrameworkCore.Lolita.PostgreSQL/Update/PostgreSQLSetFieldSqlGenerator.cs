@@ -12,35 +12,35 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             switch (operation.Type)
             {
                 case "WithValue":
-                    return $"SET {operation.Field} = {{{ operation.Index }}}";
+                    return $"{operation.Field} = {{{ operation.Index }}}";
                 case "Plus":
-                    return $"SET {operation.Field} = {operation.Field} + {{{ operation.Index }}}";
+                    return $"{operation.Field} = {operation.Field} + {{{ operation.Index }}}";
                 case "Subtract":
-                    return $"SET {operation.Field} = {operation.Field} - {{{ operation.Index }}}";
+                    return $"{operation.Field} = {operation.Field} - {{{ operation.Index }}}";
                 case "Multiply":
-                    return $"SET {operation.Field} = {operation.Field} * {{{ operation.Index }}}";
+                    return $"{operation.Field} = {operation.Field} * {{{ operation.Index }}}";
                 case "Divide":
-                    return $"SET {operation.Field} = {operation.Field} / {{{ operation.Index }}}";
+                    return $"{operation.Field} = {operation.Field} / {{{ operation.Index }}}";
                 case "Mod":
-                    return $"SET {operation.Field} = {operation.Field} % {{{ operation.Index }}}";
+                    return $"{operation.Field} = {operation.Field} % {{{ operation.Index }}}";
                 case "Append":
-                    return $"SET {operation.Field} = {operation.Field} || {{{operation.Index}}}";
+                    return $"{operation.Field} = {operation.Field} || {{{operation.Index}}}";
                 case "Prepend":
-                    return $"SET {operation.Field} = {{{operation.Index}}} || {operation.Field}";
+                    return $"{operation.Field} = {{{operation.Index}}} || {operation.Field}";
                 case "AddMilliseconds":
                     throw new NotImplementedException();
                 case "AddSeconds":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value } Seconds'";
+                    return $"{operation.Field} = {operation.Field} + INTERVAL '{ operation.Value } Seconds'";
                 case "AddMinutes":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Minutes'";
+                    return $"{operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Minutes'";
                 case "AddHours":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Hours'";
+                    return $"{operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Hours'";
                 case "AddDays":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Days'";
+                    return $"{operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Days'";
                 case "AddMonths":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Months'";
+                    return $"{operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Months'";
                 case "AddYears":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Years'";
+                    return $"{operation.Field} = {operation.Field} + INTERVAL '{ operation.Value }  Years'";
             }
             return string.Empty;
         }

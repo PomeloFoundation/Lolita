@@ -21,7 +21,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.MySql.Tests
 
                 Assert.Equal(@"UPDATE `Posts`
 SET `Posts`.`IsPinned` = {0}, 
-SET `Posts`.`IsHighlighted` = {1}
+    `Posts`.`IsHighlighted` = {1}
 WHERE `Posts`.`Id` = 1;", sql);
             }
         }

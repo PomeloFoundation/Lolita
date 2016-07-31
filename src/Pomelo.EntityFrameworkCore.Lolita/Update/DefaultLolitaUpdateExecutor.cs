@@ -27,7 +27,8 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             var sb = new StringBuilder("UPDATE ");
             sb.Append(lolita.Table)
                 .AppendLine()
-                .Append(string.Join(", \r\n", lolita.Operations))
+                .Append("SET ")
+                .Append(string.Join(", \r\n    ", lolita.Operations))
                 .AppendLine()
                 .Append(ParseWhere(visitor, lolita.Table))
                 .Append(sqlGenerationHelper.StatementTerminator);
