@@ -5,12 +5,12 @@
     "authors": [ "Amamiya Yuuko" ],
     "tags": ["Entity Framework Core", "Extensions", "Bulk Update", "Bulk Delete"],
     "description": "A light-weight addons which provided bulk updating and deleting operations for Entity Framework Core.",
-    "projectUrl": "https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.Lolita",
+    "projectUrl": "https://github.com/PomeloFoundation/Lolita",
     "iconUrl": "http://www.1234.sh/assets/Shared/pomelofoundation.png",
-    "licenseUrl": "https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.Lolita/blob/master/LICENSE",
+    "licenseUrl": "https://github.com/PomeloFoundation/Lolita/blob/master/LICENSE",
     "repository": {
       "type": "git",
-      "url": "git://github.com/pomelofoundation/pomelo.entityframeworkcore.lolita"
+      "url": "git://github.com/pomelofoundation/lolita"
     }
   },
 

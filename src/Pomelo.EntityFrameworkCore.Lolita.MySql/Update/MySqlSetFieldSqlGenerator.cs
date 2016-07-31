@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public class SqlServerSetFieldSqlGenerator : DefaultSetFieldSqlGenerator
+    public class MySqlSetFieldSqlGenerator : DefaultSetFieldSqlGenerator
     {
-        public SqlServerSetFieldSqlGenerator(ISqlGenerationHelper x) : base(x) { }
+        public MySqlSetFieldSqlGenerator(ISqlGenerationHelper x) : base(x) { }
 
         public override string TranslateToSql(SetFieldInfo operation)
         {
@@ -23,23 +24,23 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "Mod":
                     return $"{operation.Field} = {operation.Field} % {{{ operation.Index }}}";
                 case "Append":
-                    return $"{operation.Field} = {operation.Field}+{{{operation.Index}}}";
+                    return $"{operation.Field} = CONCAT({operation.Field}, {{{operation.Index}}})";
                 case "Prepend":
-                    return $"{operation.Field} = {{{operation.Index}}}+{operation.Field}";
+                    return $"{operation.Field} = CONCAT({{{operation.Index}}}, {operation.Field})";
                 case "AddMilliseconds":
-                    return $"{operation.Field} = DATEADD(ss, {{{operation.Index}}}, {operation.Field})";
+                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} microsecond)";
                 case "AddSeconds":
-                    return $"{operation.Field} = DATEADD(ms, {{{operation.Index}}}, {operation.Field})";
+                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} second)";
                 case "AddMinutes":
-                    return $"{operation.Field} = DATEADD(mi, {{{operation.Index}}}, {operation.Field})";
+                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} minute)";
                 case "AddHours":
-                    return $"{operation.Field} = DATEADD(hh, {{{operation.Index}}}, {operation.Field})";
+                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} hour)";
                 case "AddDays":
-                    return $"{operation.Field} = DATEADD(dd, {{{operation.Index}}}, {operation.Field})";
+                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} day)";
                 case "AddMonths":
-                    return $"{operation.Field} = DATEADD(mm, {{{operation.Index}}}, {operation.Field})";
+                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} month)";
                 case "AddYears":
-                    return $"{operation.Field} = DATEADD(yy, {{{operation.Index}}}, {operation.Field})";
+                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} year)";
             }
             return string.Empty;
         }

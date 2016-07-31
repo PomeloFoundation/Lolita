@@ -10,7 +10,7 @@ namespace Microsoft.EntityFrameworkCore
         public void ApplyServices(IServiceCollection services)
         {
             services
-                .AddScoped<ISetFieldSqlGenerator, DefaultSetFieldSqlGenerator>();
+                .AddScoped<ISetFieldSqlGenerator, MySqlSetFieldSqlGenerator>();
         }
     }
 
@@ -19,12 +19,14 @@ namespace Microsoft.EntityFrameworkCore
         public static DbContextOptionsBuilder UseMySqlLolita(this DbContextOptionsBuilder self)
         {
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new MySqlLolitaDbOptionExtension());
             return self;
         }
 
         public static DbContextOptions UseMySqlLolita(this DbContextOptions self)
         {
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new MySqlLolitaDbOptionExtension());
             return self;
         }
     }

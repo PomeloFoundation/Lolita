@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
@@ -28,23 +29,23 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "Mod":
                     return $"{operation.Field} = {operation.Field} % {{{ operation.Index }}}";
                 case "Append":
-                    return $"{operation.Field} = CONCAT({operation.Field}, {{{operation.Index}}})";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "Prepend":
-                    return $"{operation.Field} = CONCAT({{{operation.Index}}}, {operation.Field})";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "AddMilliseconds":
-                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} microsecond)";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "AddSeconds":
-                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} second)";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "AddMinutes":
-                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} minute)";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "AddHours":
-                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} hour)";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "AddDays":
-                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} day)";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "AddMonths":
-                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} month)";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
                 case "AddYears":
-                    return $"{operation.Field} = DATE_ADD({operation.Field}, INTERVAL {{{operation.Index}}} year)";
+                    throw new NotSupportedException("Relational field setter does not support this operation.");
             }
             return string.Empty;
         }
