@@ -57,7 +57,7 @@ You can also use the following methods to update a field:
 |Subtract| SET [x] = [x] - @value | Numeric only |
 |Multiply| SET [x] = [x] * @value | Numeric only |
 |Divide| SET [x] = [x] / @value | Numeric only |
-|Mode| SET [x] = [x] % @value | Numeric only |
+|Mod| SET [x] = [x] % @value | Numeric only |
 |Prepend| SET [x] = @value + [x] | String only |
 |Append| SET [x] = [x] + @value | String only |
 |AddMilliseconds| SET [x] = DATEADD(ms, @value, [x]) | DateTime only|
