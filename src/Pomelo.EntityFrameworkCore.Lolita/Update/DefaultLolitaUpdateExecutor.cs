@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -43,9 +45,14 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 .Replace(sqlGenerationHelper.DelimitIdentifier(visitor.CurrentParameter.Name), Table);
         }
 
-        public virtual long Execute(DbContext db, string sql, object[] param)
+        public virtual int Execute(DbContext db, string sql, object[] param)
         {
             return db.Database.ExecuteSqlCommand(sql, param);
+        }
+
+        public Task<int> ExecuteAsync(DbContext db, string sql, CancellationToken cancellationToken = default(CancellationToken), params object[] param)
+        {
+            return db.Database.ExecuteSqlCommandAsync(sql, cancellationToken, param);
         }
     }
 }

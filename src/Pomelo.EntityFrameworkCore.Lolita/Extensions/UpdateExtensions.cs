@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Query.Expressions;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Internal;
 using Remotion.Linq.Parsing.Structure;
 using Pomelo.EntityFrameworkCore.Lolita;
 using Pomelo.EntityFrameworkCore.Lolita.Update;
@@ -18,7 +14,7 @@ namespace Microsoft.EntityFrameworkCore
 {
     public static class UpdateExtensions
     {
-        public static long Update<TEntity>(this LolitaSetting<TEntity> self)
+        private static string GenerateBulkUpdateSql<TEntity>(this LolitaSetting<TEntity> self)
             where TEntity : class, new()
         {
             var queryCompiler = (QueryCompiler)ReflectionCommon.QueryCompilerOfEntityQueryProvider.GetValue(self.Query.Provider);
@@ -30,14 +26,25 @@ namespace Microsoft.EntityFrameworkCore
             modelVisitor.CreateQueryExecutor<TEntity>(queryModel);
             var qccf = (QueryCompilationContextFactory)ReflectionCommon.QueryCompilationContextFactoryOfDatabase.GetValue(database);
             var context = (DbContext)ReflectionCommon.DbContextOfQueryCompilationContextFactory.GetValue(qccf);
-
             var executor = context.GetService<ILolitaUpdateExecutor>();
             var sql = executor.GenerateSql(self, modelVisitor);
-            Console.WriteLine(sql);
-            Console.WriteLine("==== Parameters ====");
-            for (var i = 0; i < self.Parameters.Count; i++)
-                Console.WriteLine($"{{{i}}} = {self.Parameters[i].ToString()}");
-            return executor.Execute(context, sql, self.Parameters.ToArray());
+            return sql;
+        }
+
+        public static int Update<TEntity>(this LolitaSetting<TEntity> self)
+            where TEntity : class, new()
+        {
+            var executor = self.Query.GetService<ILolitaUpdateExecutor>();
+            var context = self.Query.GetService<ICurrentDbContext>().Context;
+            return executor.Execute(context, self.GenerateBulkUpdateSql(), self.Parameters.ToArray());
+        }
+
+        public static Task<int> UpdateAsync<TEntity>(this LolitaSetting<TEntity> self, CancellationToken cancellationToken = default(CancellationToken))
+            where TEntity : class, new()
+        {
+            var executor = self.Query.GetService<ILolitaUpdateExecutor>();
+            var context = self.Query.GetService<ICurrentDbContext>().Context;
+            return executor.ExecuteAsync(context, self.GenerateBulkUpdateSql(), cancellationToken, self.Parameters.ToArray());
         }
     }
 }

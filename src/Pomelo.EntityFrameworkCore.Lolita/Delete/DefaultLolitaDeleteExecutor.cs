@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Delete
 {
@@ -72,9 +74,14 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
                 .Replace(sqlGenerationHelper.DelimitIdentifier(visitor.CurrentParameter.Name), Table);
         }
 
-        public virtual long Execute(DbContext db, string sql)
+        public virtual int Execute(DbContext db, string sql)
         {
             return db.Database.ExecuteSqlCommand(sql);
+        }
+
+        public Task<int> ExecuteAsync(DbContext db, string sql, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return db.Database.ExecuteSqlCommandAsync(sql, cancellationToken);
         }
     }
 }
