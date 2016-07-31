@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public class PostgreSQLOperationFactory : IOperationFactory
+    public class SqlServerOperationSqlGenerator : IOperationSqlGenerator
     {
         public virtual string TranslateToSql(OperationInfo operation)
         {
@@ -25,23 +25,23 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 case "Mod":
                     return $"SET {operation.Field} = {operation.Field} % {{{ operation.Index }}}";
                 case "Append":
-                    return $"SET {operation.Field} = '{operation.Field}'||'{{{operation.Index}}}'";
+                    return $"SET {operation.Field} = '{operation.Field}'+'{{{operation.Index}}}'";
                 case "Prepend":
-                    return $"SET {operation.Field} = '{{{operation.Index}}}'||'{operation.Field}'";
+                    return $"SET {operation.Field} = '{{{operation.Index}}}'+'{operation.Field}'";
                 case "AddMilliseconds":
-                    throw new NotImplementedException();
+                    return $"SET {operation.Field} = DATEADD('ss', {{{operation.Index}}}, {operation.Field})";
                 case "AddSeconds":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Seconds'";
+                    return $"SET {operation.Field} = DATEADD('ms', {{{operation.Index}}}, {operation.Field})";
                 case "AddMinutes":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Minutes'";
+                    return $"SET {operation.Field} = DATEADD('mi', {{{operation.Index}}}, {operation.Field})";
                 case "AddHours":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Hours'";
+                    return $"SET {operation.Field} = DATEADD('hh', {{{operation.Index}}}, {operation.Field})";
                 case "AddDays":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Days'";
+                    return $"SET {operation.Field} = DATEADD('dd', {{{operation.Index}}}, {operation.Field})";
                 case "AddMonths":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Months '";
+                    return $"SET {operation.Field} = DATEADD('mm', {{{operation.Index}}}, {operation.Field})";
                 case "AddYears":
-                    return $"SET {operation.Field} = {operation.Field} + INTERVAL '{{{operation.Index}}} Years'";
+                    return $"SET {operation.Field} = DATEADD('yy', {{{operation.Index}}}, {operation.Field})";
             }
             return string.Empty;
         }

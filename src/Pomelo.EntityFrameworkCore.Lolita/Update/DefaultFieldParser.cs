@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public class DefaultFieldFactory : IFieldFactory
+    public class DefaultFieldParser : IFieldParser
     {
-        public DefaultFieldFactory(ICurrentDbContext CurrentDbContext, ISqlGenerationHelper SqlGenerationHelper, IDbSetFinder DbSetFinder)
+        public DefaultFieldParser(ICurrentDbContext CurrentDbContext, ISqlGenerationHelper SqlGenerationHelper, IDbSetFinder DbSetFinder)
         {
             sqlGenerationHelper = SqlGenerationHelper;
             dbSetFinder = DbSetFinder;

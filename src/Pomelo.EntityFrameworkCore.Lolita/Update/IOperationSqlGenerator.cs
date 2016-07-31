@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public interface IOperationFactory
+    public interface IOperationSqlGenerator
     {
         string TranslateToSql(OperationInfo operation);
     }

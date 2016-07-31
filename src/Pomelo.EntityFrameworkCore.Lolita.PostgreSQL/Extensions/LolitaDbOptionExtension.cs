@@ -10,7 +10,7 @@ namespace Microsoft.EntityFrameworkCore
         public void ApplyServices(IServiceCollection services)
         {
             services
-                .AddScoped<IOperationFactory, PostgreSQLOperationFactory>();
+                .AddScoped<IOperationSqlGenerator, PostgreSQLOperationSqlGenerator>();
         }
     }
 

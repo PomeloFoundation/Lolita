@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
-    public interface IFieldFactory
+    public interface IFieldParser
     {
         SqlFieldInfo VisitField<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> exp) where TEntity: class, new();
 

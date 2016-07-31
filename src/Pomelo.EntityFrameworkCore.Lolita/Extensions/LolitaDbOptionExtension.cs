@@ -10,8 +10,8 @@ namespace Microsoft.EntityFrameworkCore
         public void ApplyServices(IServiceCollection services)
         {
             services
-                .AddScoped<IFieldFactory, DefaultFieldFactory>()
-                .AddScoped<IOperationFactory, DefaultOperationFactory>()
+                .AddScoped<IFieldParser, DefaultFieldParser>()
+                .AddScoped<IOperationSqlGenerator, DefaultOperationSqlGenerator>()
                 .AddScoped<ILolitaUpdateExecutor, DefaultLolitaUpdateExecutor>()
                 .AddScoped<ILolitaDeleteExecutor, DefaultLolitaDeleteExecutor>();
         }

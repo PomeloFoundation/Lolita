@@ -10,7 +10,7 @@ namespace Microsoft.EntityFrameworkCore
         private static LolitaSetting<TEntity> valuing<TEntity, TProperty>(this LolitaValuing<TEntity, TProperty> self, string type, object value)
             where TEntity : class, new()
         {
-            var factory = self.GetService<IOperationFactory>();
+            var factory = self.GetService<IOperationSqlGenerator>();
             self.Inner.Parameters.Add(value);
             var sql = factory.TranslateToSql(new OperationInfo { Field = self.CurrentField, Index = self.Inner.Parameters.Count - 1, Type = type, Value = value });
             self.Inner.Operations.Add(sql);

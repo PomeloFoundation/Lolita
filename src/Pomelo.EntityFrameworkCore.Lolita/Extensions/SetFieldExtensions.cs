@@ -16,7 +16,7 @@ namespace Microsoft.EntityFrameworkCore
             if (SetValueExpression == null)
                 throw new ArgumentNullException("SetValueExpression");
 
-            var factory = self.GetService<IFieldFactory>();
+            var factory = self.GetService<IFieldParser>();
             var sqlfield = factory.VisitField(SetValueExpression);
 
             var inner = new LolitaSetting<TEntity> { Query = self, Table = factory.ParseTable(sqlfield) };
@@ -29,7 +29,7 @@ namespace Microsoft.EntityFrameworkCore
             if (SetValueExpression == null)
                 throw new ArgumentNullException("SetValueExpression");
 
-            var factory = self.GetService<IFieldFactory>();
+            var factory = self.GetService<IFieldParser>();
             var sqlfield = factory.VisitField(SetValueExpression);
 
             return new LolitaValuing<TEntity, TProperty> { Inner = self, CurrentField = factory.ParseField(sqlfield) };
