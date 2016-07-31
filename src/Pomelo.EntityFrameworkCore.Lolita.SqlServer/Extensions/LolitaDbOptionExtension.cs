@@ -16,14 +16,14 @@ namespace Microsoft.EntityFrameworkCore
 
     public static class LolitaDbOptionExtensions
     {
-        public static DbContextOptionsBuilder UseSqliteLolita(this DbContextOptionsBuilder self)
+        public static DbContextOptionsBuilder UseSqlServerLolita(this DbContextOptionsBuilder self)
         {
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new SqlServerLolitaDbOptionExtension());
             return self;
         }
 
-        public static DbContextOptions UseSqliteLolita(this DbContextOptions self)
+        public static DbContextOptions UseSqlServerLolita(this DbContextOptions self)
         {
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new SqlServerLolitaDbOptionExtension());
