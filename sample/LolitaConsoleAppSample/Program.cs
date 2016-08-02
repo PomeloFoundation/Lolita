@@ -31,7 +31,6 @@ namespace LolitaConsoleAppSample
             var row_updated2 = db.Articles
                 .Where(x => db.Users.OrderBy(y => y.Id).Take(2).Select(y=>y.Id).Contains(x.Id))
                 .Delete();
-
             Console.WriteLine("Lolita finished...");
             Console.Read();
         }
