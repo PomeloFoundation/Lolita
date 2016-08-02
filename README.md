@@ -7,7 +7,7 @@ A light-weight extension which provides bulk update and delete operations for En
 
 ## Getting Started
 
-① Add `Pomelo.EntityFrameworkCore.Lolita` package into your `project.json`. There are many different special versions for different EF database provider:
+① Add `Pomelo.EntityFrameworkCore.Lolita` package into your `project.json`. There are many different special versions for different EF database providers:
 
 - Pomelo.EntityFrameworkCore.Lolita.MySql
 - Pomelo.EntityFrameworkCore.Lolita.SqlServer
