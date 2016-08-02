@@ -39,6 +39,8 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
 
         protected virtual string ParseWhere(RelationalQueryModelVisitor visitor, string Table)
         {
+            if (visitor == null || visitor.Queries.Count == 0)
+                return "";
             var sql = visitor.Queries.First().ToString();
             var pos = sql.IndexOf("WHERE");
             if (pos < 0)

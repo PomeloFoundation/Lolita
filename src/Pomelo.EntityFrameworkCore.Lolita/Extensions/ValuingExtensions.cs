@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Storage;
 using Pomelo.EntityFrameworkCore.Lolita;
 using Pomelo.EntityFrameworkCore.Lolita.Update;
 
@@ -7,6 +7,38 @@ namespace Microsoft.EntityFrameworkCore
 {
     public static class ValuingExtensions
     {
+        public static LolitaSetting<TEntity> WithSQL<TEntity, TProperty>(this LolitaValuing<TEntity, TProperty> self, Func<string, ISqlGenerationHelper, string> sql, params object[] parameters)
+            where TEntity : class, new()
+        {
+            if (sql == null)
+            {
+                throw new ArgumentNullException("Sql expression cannot be null.");
+            }
+
+            var field = self.CurrentField;
+            var sqlGenerationHelper = self.Inner.GetService<ISqlGenerationHelper>();
+            var _sql = sql(field, sqlGenerationHelper);
+
+            var paramCnt = self.Inner.Parameters.Count;
+            if (parameters != null && parameters.Length > 0)
+            {
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    _sql = _sql.Replace("{" + i + "}", "{" + (i + paramCnt) + "}");
+                    self.Inner.Parameters.Add(parameters[i]);
+                }
+            }
+            var field_info = new SetFieldInfo { Field = self.CurrentField, Index = -1, Type = "WithSQL", Value = _sql };
+            var factory = self.GetService<ISetFieldSqlGenerator>();
+            self.Inner.Operations.Add(factory.TranslateToSql(field_info));
+            return self.Inner;
+        }
+
+        public static LolitaSetting<TEntity> WithSQL<TEntity, TProperty>(this LolitaValuing<TEntity, TProperty> self, Func<string, string> sql, params object[] parameters)
+            where TEntity : class, new()
+        {
+            return self.WithSQL((x, y) => sql(x));
+        }
         private static LolitaSetting<TEntity> valuing<TEntity, TProperty>(this LolitaValuing<TEntity, TProperty> self, string type, object value)
             where TEntity : class, new()
         {

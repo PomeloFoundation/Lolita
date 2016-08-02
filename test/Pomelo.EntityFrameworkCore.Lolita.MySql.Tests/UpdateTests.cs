@@ -95,5 +95,20 @@ WHERE `Users`.`Id` IN (
 ) AND (`Users`.`Role` = 0);", sql, false, true, false);
             }
         }
+
+        [Fact]
+        public void update_with_sql()
+        {
+            using (var db = new MySqlContext())
+            {
+                var sql = db.Posts
+                    .SetField(x => x.IsHighlighted).WithSQL((x, y) => $"{ y.DelimitIdentifier("IsPinned") }")
+                    .GenerateBulkUpdateSql();
+
+                Assert.Equal(@"UPDATE `Posts`
+SET `Posts`.`IsHighlighted` = `IsPinned`
+;", sql, false, true, false);
+            }
+        }
     }
 }

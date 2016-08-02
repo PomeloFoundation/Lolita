@@ -9,6 +9,19 @@ namespace Pomelo.EntityFrameworkCore.Lolita.MySql.Tests
     public class DeleteTests
     {
         [Fact]
+        public void delete_without_where_predicate()
+        {
+            using (var db = new MySqlContext())
+            {
+                var sql = db.Posts
+                    .GenerateBulkDeleteSql();
+
+                Assert.Equal(@"DELETE FROM `Posts`
+;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
         public void delete_with_simple_where_predicate()
         {
             using (var db = new MySqlContext())

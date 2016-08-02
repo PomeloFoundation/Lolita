@@ -11,6 +11,19 @@ namespace Pomelo.EntityFrameworkCore.Lolita.SqlServer.Tests
     public class DeleteTests
     {
         [Fact]
+        public void delete_without_where_predicate()
+        {
+            using (var db = new SqlServerContext())
+            {
+                var sql = db.Posts
+                    .GenerateBulkDeleteSql();
+
+                Assert.Equal(@"DELETE FROM [Posts]
+;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
         public void delete_with_simple_where_predicate()
         {
             using (var db = new SqlServerContext())
