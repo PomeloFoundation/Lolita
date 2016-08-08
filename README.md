@@ -39,6 +39,10 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
 ③ There are many different extended methods for updating a column or bulk deleting.
 
+```c#
+using Microsoft.EntityFrameworkCore;
+```
+
 Updating:
 
 ```c#
