@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Query;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Delete
 {
     public class DefaultLolitaDeleteExecutor : ILolitaDeleteExecutor
     {
+        private static FieldInfo EntityTypesField = typeof(Model).GetTypeInfo().DeclaredFields.Single(x => x.Name == "_entityTypes");
+
         public DefaultLolitaDeleteExecutor(ICurrentDbContext CurrentDbContext, ISqlGenerationHelper SqlGenerationHelper, IDbSetFinder DbSetFinder)
         {
             sqlGenerationHelper = SqlGenerationHelper;
@@ -25,29 +29,36 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
         private IDbSetFinder dbSetFinder;
         private DbContext context;
 
+        protected virtual string ParseTableName(EntityType type)
+        {
+            string tableName;
+            var anno = type.FindAnnotation("Relational:TableName");
+            if (anno != null)
+                tableName = anno.Value.ToString();
+            else
+            {
+                var prop = dbSetFinder.FindSets(context).SingleOrDefault(y => y.ClrType == type.ClrType);
+                if (!prop.Equals(default(DbSetProperty)))
+                    tableName = prop.Name;
+                else
+                    tableName = type.ClrType.Name;
+            }
+            return tableName;
+        }
+
         protected virtual string GetTableName<TEntity>()
         {
             string schema = null, table = null;
+            var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
+            var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
+
             var tableAttr = typeof(TEntity).GetTypeInfo().GetCustomAttribute<TableAttribute>();
             if (tableAttr != null)
-            {
-                table = tableAttr.Name;
                 schema = tableAttr.Schema;
-            }
-            else
-            {
-                var setName = dbSetFinder.FindSets(context).SingleOrDefault(x => x.ClrType == typeof(TEntity)).Name;
-                if (string.IsNullOrEmpty(setName))
-                {
-                    throw new ArgumentNullException(typeof(TEntity).Name);
-                }
-                table = setName;
-            }
-
             if (schema != null)
-                return $"{sqlGenerationHelper.DelimitIdentifier(schema)}.{sqlGenerationHelper.DelimitIdentifier(table)}";
+                return $"{sqlGenerationHelper.DelimitIdentifier(schema)}.{sqlGenerationHelper.DelimitIdentifier(ParseTableName(et))}";
             else
-                return sqlGenerationHelper.DelimitIdentifier(table);
+                return sqlGenerationHelper.DelimitIdentifier(ParseTableName(et));
         }
 
         public virtual string GenerateSql<TEntity>(IQueryable<TEntity> lolita, RelationalQueryModelVisitor visitor) where TEntity : class, new()

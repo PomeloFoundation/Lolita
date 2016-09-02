@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Text;
 using System.Linq;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
     public class DefaultFieldParser : IFieldParser
     {
+        private static FieldInfo EntityTypesField = typeof(Model).GetTypeInfo().DeclaredFields.Single(x => x.Name == "_entityTypes");
+
         public DefaultFieldParser(ICurrentDbContext CurrentDbContext, ISqlGenerationHelper SqlGenerationHelper, IDbSetFinder DbSetFinder)
         {
             sqlGenerationHelper = SqlGenerationHelper;
@@ -52,6 +56,23 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             return sb.ToString();
         }
 
+        protected virtual string ParseTableName(EntityType type)
+        {
+            string tableName;
+            var anno = type.FindAnnotation("Relational:TableName");
+            if (anno != null)
+                tableName = anno.Value.ToString();
+            else
+            {
+                var prop = dbSetFinder.FindSets(context).SingleOrDefault(y => y.ClrType == type.ClrType);
+                if (!prop.Equals(default(DbSetProperty)))
+                    tableName = prop.Name;
+                else
+                    tableName = type.ClrType.Name;
+            }
+            return tableName;
+        }
+
         public virtual SqlFieldInfo VisitField<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> exp)
             where TEntity : class,new()
         {
@@ -63,21 +84,9 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 throw new ArgumentException("Too many parameters in the expression.");
             }
             var param = exp.Parameters.Single();
-            var tableAttr = param.Type.GetTypeInfo().GetCustomAttribute<TableAttribute>();
-            if (tableAttr != null)
-            {
-                ret.Table = tableAttr.Name;
-                ret.Schema = tableAttr.Schema;
-            }
-            else
-            {
-                var setName = dbSetFinder.FindSets(context).SingleOrDefault(x => x.ClrType == typeof(TEntity)).Name;
-                if (string.IsNullOrEmpty(setName))
-                {
-                    throw new ArgumentNullException(typeof(TEntity).Name);
-                }
-                ret.Table = setName;
-            }
+            var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
+            var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
+            ret.Table = ParseTableName(et);
 
             // Getting field name
             var body = exp.Body as MemberExpression;
