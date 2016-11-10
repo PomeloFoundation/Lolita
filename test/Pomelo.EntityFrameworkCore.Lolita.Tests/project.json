@@ -1,7 +1,7 @@
 ﻿{
   "version": "1.0.0-*",
   "dependencies": {
-    "Pomelo.EntityFrameworkCore.Lolita": "1.0.0-*"
+    "Pomelo.EntityFrameworkCore.Lolita": "1.0.1-*"
   },
   "frameworks": {
     "net451": {},
