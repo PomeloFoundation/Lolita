@@ -23,7 +23,21 @@ namespace Microsoft.EntityFrameworkCore
             return self;
         }
 
+        public static DbContextOptionsBuilder<TContext> UsePostgreSQLLolita<TContext>(this DbContextOptionsBuilder<TContext> self) where TContext : DbContext
+        {
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new PostgreSQLLolitaDbOptionExtension());
+            return self;
+        }
+
         public static DbContextOptions UsePostgreSQLLolita(this DbContextOptions self)
+        {
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new PostgreSQLLolitaDbOptionExtension());
+            return self;
+        }
+
+        public static DbContextOptions<TContext> UsePostgreSQLLolita<TContext>(this DbContextOptions<TContext> self) where TContext : DbContext
         {
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new PostgreSQLLolitaDbOptionExtension());
