@@ -9,7 +9,7 @@ using Remotion.Linq;
 
 namespace Pomelo.EntityFrameworkCore.Lolita
 {
-    public static class DatabaseExtesions
+    internal static class DatabaseExtesions
     {
         public static EntityQueryModelVisitor CreateVisitor(this Database self, QueryModel qm)
         {

@@ -7,10 +7,21 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class PostgreSQLLolitaDbOptionExtension : IDbContextOptionsExtension
     {
-        public void ApplyServices(IServiceCollection services)
+        public bool ApplyServices(IServiceCollection services)
         {
             services
                 .AddScoped<ISetFieldSqlGenerator, PostgreSQLSetFieldSqlGenerator>();
+
+            return true;
+        }
+
+        public long GetServiceProviderHashCode()
+        {
+            return 86216188623903;
+        }
+
+        public void Validate(IDbContextOptions options)
+        {
         }
     }
 

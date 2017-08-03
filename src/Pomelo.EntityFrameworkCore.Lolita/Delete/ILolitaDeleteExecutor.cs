@@ -8,7 +8,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
 {
     public interface ILolitaDeleteExecutor
     {
-        string GenerateSql<TEntity>(IQueryable<TEntity> lolita, RelationalQueryModelVisitor visitor) where TEntity : class, new();
+        string GenerateSql<TEntity>(IQueryable<TEntity> lolita) where TEntity : class, new();
 
         int Execute(DbContext db, string sql);
 

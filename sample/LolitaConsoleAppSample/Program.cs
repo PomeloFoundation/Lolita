@@ -13,7 +13,7 @@ namespace LolitaConsoleAppSample
             var collection = new ServiceCollection();
             collection.AddDbContext<LolitaContext>(x => 
             {
-                x.UseMySql("server=localhost;database=lolita;uid=root;pwd=19931101");
+                x.UseMySql("server=localhost;database=lolita;uid=root;pwd=123456");
                 x.UseMySqlLolita();
             });
             var services = collection.BuildServiceProvider();
@@ -29,7 +29,7 @@ namespace LolitaConsoleAppSample
                 .Update();
             
             var row_updated2 = db.Articles
-                .Where(x => db.Users.OrderBy(y => y.Id).Take(2).Select(y=>y.Id).Contains(x.Id))
+                .Where(x => db.Users.Where(y => y.Id %2 == 0).Select(y=>y.Id).Contains(x.Id))
                 .Delete();
             Console.WriteLine("Lolita finished...");
             Console.Read();

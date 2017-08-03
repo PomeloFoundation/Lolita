@@ -48,7 +48,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
 
         protected virtual string GetTableName<TEntity>()
         {
-            string schema = null, table = null;
+            string schema = null;
             var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
             var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
 
@@ -61,10 +61,11 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
                 return sqlGenerationHelper.DelimitIdentifier(ParseTableName(et));
         }
 
-        public virtual string GenerateSql<TEntity>(IQueryable<TEntity> lolita, RelationalQueryModelVisitor visitor) where TEntity : class, new()
+        public virtual string GenerateSql<TEntity>(IQueryable<TEntity> lolita) where TEntity : class, new()
         {
             var sb = new StringBuilder("DELETE FROM ");
             var model = lolita.ElementType;
+            var visitor = lolita.CompileQuery();
 
             var table = GetTableName<TEntity>();
             sb.Append(table)

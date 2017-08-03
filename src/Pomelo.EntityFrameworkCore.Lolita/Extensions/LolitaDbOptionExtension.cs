@@ -7,13 +7,24 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class LolitaDbOptionExtension : IDbContextOptionsExtension
     {
-        public void ApplyServices(IServiceCollection services)
+        public bool ApplyServices(IServiceCollection services)
         {
             services
                 .AddScoped<IFieldParser, DefaultFieldParser>()
                 .AddScoped<ISetFieldSqlGenerator, DefaultSetFieldSqlGenerator>()
                 .AddScoped<ILolitaUpdateExecutor, DefaultLolitaUpdateExecutor>()
                 .AddScoped<ILolitaDeleteExecutor, DefaultLolitaDeleteExecutor>();
+
+            return true;
+        }
+
+        public long GetServiceProviderHashCode()
+        {
+            return 86216188623901;
+        }
+
+        public void Validate(IDbContextOptions options)
+        {
         }
     }
 

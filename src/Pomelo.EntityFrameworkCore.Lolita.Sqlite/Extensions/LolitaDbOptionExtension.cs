@@ -7,10 +7,21 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class SqliteLolitaDbOptionExtension : IDbContextOptionsExtension
     {
-        public void ApplyServices(IServiceCollection services)
+        public bool ApplyServices(IServiceCollection services)
         {
             services
                 .AddScoped<ISetFieldSqlGenerator, SqliteSetFieldSqlGenerator>();
+
+            return true;
+        }
+
+        public long GetServiceProviderHashCode()
+        {
+            return 86216188623904;
+        }
+
+        public void Validate(IDbContextOptions options)
+        {
         }
     }
 

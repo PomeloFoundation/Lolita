@@ -9,16 +9,18 @@ using System.Reflection;
 
 namespace Microsoft.EntityFrameworkCore
 {
-    public static class GetServiceExtensions
+    internal static class GetServiceExtensions
     {
         public static TService GetService<TService>(this IQueryable self)
         {
             if (self.GetType().GetTypeInfo().GetGenericTypeDefinition() == typeof(EntityQueryable<>))
             {
                 var queryCompiler = (QueryCompiler)ReflectionCommon.QueryCompilerOfEntityQueryProvider.GetValue(self.Provider);
-                var database = (RelationalDatabase)ReflectionCommon.DataBaseOfQueryCompiler.GetValue(queryCompiler);
-                var qccf = (QueryCompilationContextFactory)ReflectionCommon.QueryCompilationContextFactoryOfDatabase.GetValue(database);
-                var context = (DbContext)ReflectionCommon.DbContextOfQueryCompilationContextFactory.GetValue(qccf);
+                var database = (RelationalDatabase)ReflectionCommon.DatabaseOfQueryCompiler.GetValue(queryCompiler);
+                var dbDependencies = (DatabaseDependencies)ReflectionCommon.DependenciesOfDatabase.GetValue(database);
+                var qccf = dbDependencies.QueryCompilationContextFactory;
+                var qccfDependencies = (QueryCompilationContextDependencies)ReflectionCommon.DependenciesOfQueryCompilerContextFactory.GetValue(qccf);
+                var context = qccfDependencies.CurrentContext.Context;
                 return context.GetService<TService>();
             }
             else if (self.GetType().GetTypeInfo().GetGenericTypeDefinition() == typeof(InternalDbSet<>))

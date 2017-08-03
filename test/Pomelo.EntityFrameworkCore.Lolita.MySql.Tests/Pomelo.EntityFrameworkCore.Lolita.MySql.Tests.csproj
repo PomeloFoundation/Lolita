@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <AssemblyName>Pomelo.EntityFrameworkCore.Lolita.MySql.Tests</AssemblyName>
+    <PackageId>Pomelo.EntityFrameworkCore.Lolita.MySql.Tests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pomelo.EntityFrameworkCore.Lolita.Tests\Pomelo.EntityFrameworkCore.Lolita.Tests.csproj" />
+    <ProjectReference Include="..\..\src\Pomelo.EntityFrameworkCore.Lolita.MySql\Pomelo.EntityFrameworkCore.Lolita.MySql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0-preview-20170727-01" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta3-build3705" />
+    <PackageReference Include="xunit" Version="2.3.0-beta3-build3705" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.0.0-*" />
+  </ItemGroup>
+</Project>

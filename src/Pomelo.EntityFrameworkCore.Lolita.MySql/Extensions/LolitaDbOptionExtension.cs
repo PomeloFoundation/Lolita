@@ -7,10 +7,21 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class MySqlLolitaDbOptionExtension : IDbContextOptionsExtension
     {
-        public void ApplyServices(IServiceCollection services)
+        public bool ApplyServices(IServiceCollection services)
         {
             services
                 .AddScoped<ISetFieldSqlGenerator, MySqlSetFieldSqlGenerator>();
+
+            return true;
+        }
+
+        public long GetServiceProviderHashCode()
+        {
+            return 86216188623902;
+        }
+
+        public void Validate(IDbContextOptions options)
+        {
         }
     }
 
