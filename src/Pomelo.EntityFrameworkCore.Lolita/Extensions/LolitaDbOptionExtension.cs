@@ -36,7 +36,19 @@ namespace Microsoft.EntityFrameworkCore
             return self;
         }
 
+        public static DbContextOptionsBuilder<TContext> UseLolita<TContext>(this DbContextOptionsBuilder<TContext> self) where TContext : DbContext
+        {
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
+            return self;
+        }
+
         public static DbContextOptions UseLolita(this DbContextOptions self)
+        {
+            ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
+            return self;
+        }
+
+        public static DbContextOptions<TContext> UseLolita<TContext>(this DbContextOptions<TContext> self) where TContext : DbContext
         {
             ((IDbContextOptionsBuilderInfrastructure)self).AddOrUpdateExtension(new LolitaDbOptionExtension());
             return self;
