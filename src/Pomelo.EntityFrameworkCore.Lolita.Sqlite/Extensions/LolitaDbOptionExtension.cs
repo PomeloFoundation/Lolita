@@ -7,6 +7,8 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class SqliteLolitaDbOptionExtension : IDbContextOptionsExtension
     {
+        public string LogFragment => "Pomelo.EFCore.Lolita";
+
         public bool ApplyServices(IServiceCollection services)
         {
             services

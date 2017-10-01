@@ -18,8 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.0-preview2-final" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.Extensions.ToSql" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.Extensions.ToSql" Version="2.0.0-rtm-10002" />
   </ItemGroup>
 
 </Project>

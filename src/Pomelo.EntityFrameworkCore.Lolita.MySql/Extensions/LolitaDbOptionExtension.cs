@@ -8,6 +8,8 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class MySqlLolitaDbOptionExtension : IDbContextOptionsExtension
     {
+        public string LogFragment => "Pomelo.EFCore.Lolita";
+
         public bool ApplyServices(IServiceCollection services)
         {
             services
