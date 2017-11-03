@@ -19,7 +19,7 @@ namespace Microsoft.EntityFrameworkCore
             var factory = self.GetService<IFieldParser>();
             var sqlfield = factory.VisitField(SetValueExpression);
 
-            var inner = new LolitaSetting<TEntity> { Query = self, Table = factory.ParseTable(sqlfield) };
+            var inner = new LolitaSetting<TEntity> { Query = self, FullTable = factory.ParseFullTable(sqlfield), ShortTable = factory.ParseShortTable(sqlfield)};
             return new LolitaValuing<TEntity, TProperty> { Inner = inner, CurrentField = factory.ParseField(sqlfield) };
         }
 
