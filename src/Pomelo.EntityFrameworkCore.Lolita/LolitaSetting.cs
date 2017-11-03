@@ -15,7 +15,9 @@ namespace Pomelo.EntityFrameworkCore.Lolita
     {
         public IQueryable<TEntity> Query { get; set; }
 
-        public string Table { get; set; }
+        public string FullTable { get; set; }
+
+        public string ShortTable { get; set; }
 
         public IList<string> Operations { get; set; } = new List<string>();
 

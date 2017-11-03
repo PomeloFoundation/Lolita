@@ -12,6 +12,8 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
 
         string ParseField(SqlFieldInfo field);
 
-        string ParseTable(SqlFieldInfo field);
+        string ParseFullTable(SqlFieldInfo field);
+
+        string ParseShortTable(SqlFieldInfo field);
     }
 }

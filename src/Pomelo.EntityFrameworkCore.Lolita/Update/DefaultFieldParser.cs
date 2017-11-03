@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
@@ -30,12 +31,6 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
         public virtual string ParseField(SqlFieldInfo field)
         {
             var sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(field.Database))
-                sb.Append(sqlGenerationHelper.DelimitIdentifier(field.Database))
-                    .Append(".");
-            if (!string.IsNullOrEmpty(field.Schema))
-                sb.Append(sqlGenerationHelper.DelimitIdentifier(field.Schema))
-                    .Append(".");
             if (!string.IsNullOrEmpty(field.Table))
                 sb.Append(sqlGenerationHelper.DelimitIdentifier(field.Table))
                     .Append(".");
@@ -43,7 +38,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             return sb.ToString();
         }
 
-        public virtual string ParseTable(SqlFieldInfo field)
+        public virtual string ParseFullTable(SqlFieldInfo field)
         {
             var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(field.Database))
@@ -56,7 +51,12 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             return sb.ToString();
         }
 
-        protected virtual string ParseTableName(EntityType type)
+        public virtual string ParseShortTable(SqlFieldInfo field)
+        {
+            return sqlGenerationHelper.DelimitIdentifier(field.Table);
+        }
+
+        protected virtual string GetTableName(EntityType type)
         {
             string tableName;
             var anno = type.FindAnnotation("Relational:TableName");
@@ -73,6 +73,26 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             return tableName;
         }
 
+        protected virtual string GetSchemaName(EntityType type)
+        {
+            string schema = null;
+
+            // first, try to get schema from fluent API or data annotation
+            IAnnotation anno = type.FindAnnotation("Relational:Schema");
+            if (anno != null)
+                schema = anno.Value.ToString();
+            if (schema == null)
+            {
+                // otherwise, try to get schema from context default
+                anno = context.Model.FindAnnotation("Relational:DefaultSchema");
+                if (anno != null)
+                    schema = anno.Value.ToString();
+            }
+            // TODO: ideally, switch to `et.Relational().Schema`, to cover all cases at once
+
+            return schema;
+        }
+
         public virtual SqlFieldInfo VisitField<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> exp)
             where TEntity : class,new()
         {
@@ -86,7 +106,8 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             var param = exp.Parameters.Single();
             var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
             var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
-            ret.Table = ParseTableName(et);
+            ret.Table = GetTableName(et);
+            ret.Schema = GetSchemaName(et);
 
             // Getting field name
             var body = exp.Body as MemberExpression;

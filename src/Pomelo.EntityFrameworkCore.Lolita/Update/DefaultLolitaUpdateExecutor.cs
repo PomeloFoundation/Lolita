@@ -26,12 +26,12 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
         public virtual string GenerateSql<TEntity>(LolitaSetting<TEntity> lolita, RelationalQueryModelVisitor visitor) where TEntity : class, new()
         {
             var sb = new StringBuilder("UPDATE ");
-            sb.Append(lolita.Table)
+            sb.Append(lolita.FullTable)
                 .AppendLine()
                 .Append("SET ")
                 .Append(string.Join($", { Environment.NewLine }    ", lolita.Operations))
                 .AppendLine()
-                .Append(ParseWhere(visitor, lolita.Table))
+                .Append(ParseWhere(visitor, lolita.ShortTable))
                 .Append(sqlGenerationHelper.StatementTerminator);
 
             return sb.ToString();
