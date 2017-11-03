@@ -46,11 +46,14 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
             return tableName;
         }
 
-        protected virtual string GetTableName<TEntity>()
+        protected virtual string GetTableName(EntityType et)
+        {
+            return sqlGenerationHelper.DelimitIdentifier(ParseTableName(et));
+        }
+
+        protected virtual string GetFullTableName(EntityType et)
         {
             string schema = null;
-            var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
-            var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
 
             // first, try to get schema from fluent API or data annotation
             IAnnotation anno = et.FindAnnotation("Relational:Schema");
@@ -76,8 +79,12 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
             var model = lolita.ElementType;
             var visitor = lolita.CompileQuery();
 
-            var table = GetTableName<TEntity>();
-            sb.Append(table)
+            var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
+            var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
+
+            var table = GetTableName(et);
+            var fullTable = GetFullTableName(et);
+            sb.Append(fullTable)
                 .AppendLine()
                 .Append(ParseWhere(visitor, table))
                 .Append(sqlGenerationHelper.StatementTerminator);

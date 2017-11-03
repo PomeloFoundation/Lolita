@@ -63,10 +63,11 @@ WHERE ((
             using (var db = new DefaultSchemaContext("someDefaultSchema"))
             {
                 var sql = db.Posts
+                    .Where(x => x.Id == 1)
                     .GenerateBulkDeleteSql();
 
                 Assert.Equal(@"DELETE FROM [someDefaultSchema].[Posts]
-;", sql, false, true, false);
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -76,10 +77,11 @@ WHERE ((
             using (var db = new FluentApiContext("someApiSchema"))
             {
                 var sql = db.Posts
+                    .Where(x => x.Id == 1)
                     .GenerateBulkDeleteSql();
 
-                Assert.Equal($@"DELETE FROM [someApiSchema].[Posts]
-;", sql, false, true, false);
+                Assert.Equal(@"DELETE FROM [someApiSchema].[Posts]
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -89,10 +91,11 @@ WHERE ((
             using (var db = new DataAnnotationContext())
             {
                 var sql = db.Products
+                    .Where(x => x.Id == 1)
                     .GenerateBulkDeleteSql();
 
-                Assert.Equal($@"DELETE FROM [someAttributeSchema].[Products]
-;", sql, false, true, false);
+                Assert.Equal(@"DELETE FROM [someAttributeSchema].[Products]
+WHERE [Products].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -102,11 +105,12 @@ WHERE ((
             using (var db = new FluentApiDefaultSchemaContext("someDefaultSchema", "someApiSchema"))
             {
                 var sql = db.Posts
+                    .Where(x => x.Id == 1)
                     .GenerateBulkDeleteSql();
 
                 // Fluent API takes precedence over default
-                Assert.Equal($@"DELETE FROM [someApiSchema].[Posts]
-;", sql, false, true, false);
+                Assert.Equal(@"DELETE FROM [someApiSchema].[Posts]
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -116,11 +120,12 @@ WHERE ((
             using (var db = new DataAnnotationDefaultSchemaContext("someDefaultSchema"))
             {
                 var sql = db.Products
+                    .Where(x => x.Id == 1)
                     .GenerateBulkDeleteSql();
 
                 // Data annotation takes precedence over default
-                Assert.Equal($@"DELETE FROM [someAttributeSchema].[Products]
-;", sql, false, true, false);
+                Assert.Equal(@"DELETE FROM [someAttributeSchema].[Products]
+WHERE [Products].[Id] = 1;", sql, false, true, false);
             }
         }
 
@@ -130,11 +135,12 @@ WHERE ((
             using (var db = new FluentApiDataAnnotationContext("someApiSchema"))
             {
                 var sql = db.Products
+                    .Where(x => x.Id == 1)
                     .GenerateBulkDeleteSql();
 
                 // Fluent API takes precedence over data annotation
-                Assert.Equal($@"DELETE FROM [someApiSchema].[Products]
-;", sql, false, true, false);
+                Assert.Equal(@"DELETE FROM [someApiSchema].[Products]
+WHERE [Products].[Id] = 1;", sql, false, true, false);
             }
         }
     }
