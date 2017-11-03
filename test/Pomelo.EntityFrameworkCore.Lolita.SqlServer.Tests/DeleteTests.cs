@@ -71,7 +71,7 @@ WHERE ((
         }
 
         [Fact]
-        public void delete_with_table_schema_from_fluent_API()
+        public void delete_with_schema_from_fluent_API()
         {
             using (var db = new FluentApiContext("someApiSchema"))
             {
@@ -84,7 +84,7 @@ WHERE ((
         }
 
         [Fact]
-        public void delete_with_table_schema_from_data_annotation()
+        public void delete_with_schema_from_data_annotation()
         {
             using (var db = new DataAnnotationContext())
             {
@@ -92,6 +92,48 @@ WHERE ((
                     .GenerateBulkDeleteSql();
 
                 Assert.Equal($@"DELETE FROM [someAttributeSchema].[Products]
+;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
+        public void delete_with_schema_both_from_fluent_API_and_default()
+        {
+            using (var db = new FluentApiDefaultSchemaContext("someDefaultSchema", "someApiSchema"))
+            {
+                var sql = db.Posts
+                    .GenerateBulkDeleteSql();
+
+                // Fluent API takes precedence over default
+                Assert.Equal($@"DELETE FROM [someApiSchema].[Posts]
+;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
+        public void delete_with_schema_both_from_data_annotation_and_default()
+        {
+            using (var db = new DataAnnotationDefaultSchemaContext("someDefaultSchema"))
+            {
+                var sql = db.Products
+                    .GenerateBulkDeleteSql();
+
+                // Data annotation takes precedence over default
+                Assert.Equal($@"DELETE FROM [someAttributeSchema].[Products]
+;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
+        public void delete_with_schema_both_from_fluent_API_and_data_annotation()
+        {
+            using (var db = new FluentApiDataAnnotationContext("someApiSchema"))
+            {
+                var sql = db.Products
+                    .GenerateBulkDeleteSql();
+
+                // Fluent API takes precedence over data annotation
+                Assert.Equal($@"DELETE FROM [someApiSchema].[Products]
 ;", sql, false, true, false);
             }
         }

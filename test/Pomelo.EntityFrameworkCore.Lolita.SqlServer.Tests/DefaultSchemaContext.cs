@@ -5,20 +5,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.SqlServer.Tests
 {
-    class DefaultSchemaContext : SqlServerContext
+    public class DefaultSchemaContext : SqlServerContext
     {
-        public DefaultSchemaContext(string schemaName)
+        public DefaultSchemaContext(string defaultSchemaName)
         {
-            this.schemaName = schemaName;
+            this.defaultSchemaName = defaultSchemaName;
         }
 
-        private readonly string schemaName;
+        protected readonly string defaultSchemaName;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.HasDefaultSchema(schemaName);
+            modelBuilder.HasDefaultSchema(defaultSchemaName);
         }
     }
 }
