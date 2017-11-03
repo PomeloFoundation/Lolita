@@ -56,5 +56,44 @@ WHERE ((
 ) = 0) AND ([Users].[Role] = 0);", sql, false, true, false);
             }
         }
+
+        [Fact]
+        public void delete_with_default_schema()
+        {
+            using (var db = new DefaultSchemaContext("someDefaultSchema"))
+            {
+                var sql = db.Posts
+                    .GenerateBulkDeleteSql();
+
+                Assert.Equal(@"DELETE FROM [someDefaultSchema].[Posts]
+;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
+        public void delete_with_table_schema_from_fluent_API()
+        {
+            using (var db = new FluentApiContext("someApiSchema"))
+            {
+                var sql = db.Posts
+                    .GenerateBulkDeleteSql();
+
+                Assert.Equal($@"DELETE FROM [someApiSchema].[Posts]
+;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
+        public void delete_with_table_schema_from_data_annotation()
+        {
+            using (var db = new DataAnnotationContext())
+            {
+                var sql = db.Products
+                    .GenerateBulkDeleteSql();
+
+                Assert.Equal($@"DELETE FROM [someAttributeSchema].[Products]
+;", sql, false, true, false);
+            }
+        }
     }
 }
