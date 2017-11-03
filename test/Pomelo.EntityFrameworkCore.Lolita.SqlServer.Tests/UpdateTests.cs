@@ -113,5 +113,59 @@ SET [Posts].[IsHighlighted] = [IsPinned]
 ;", sql, false, true, false);
             }
         }
+
+        [Fact]
+        public void update_with_default_schema()
+        {
+            using (var db = new DefaultSchemaContext("someDefaultSchema"))
+            {
+                var sql = db.Posts
+                    .Where(x => x.Id == 1)
+                    .SetField(x => x.IsPinned).WithValue(true)
+                    .SetField(x => x.IsHighlighted).WithValue(true)
+                    .GenerateBulkUpdateSql();
+
+                Assert.Equal(@"UPDATE [someDefaultSchema].[Posts]
+SET [Posts].[IsPinned] = {0}, 
+    [Posts].[IsHighlighted] = {1}
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
+        public void update_with_table_schema_from_fluent_API()
+        {
+            using (var db = new FluentApiContext("someApiSchema"))
+            {
+                var sql = db.Posts
+                    .Where(x => x.Id == 1)
+                    .SetField(x => x.IsPinned).WithValue(true)
+                    .SetField(x => x.IsHighlighted).WithValue(true)
+                    .GenerateBulkUpdateSql();
+
+                Assert.Equal(@"UPDATE [someApiSchema].[Posts]
+SET [Posts].[IsPinned] = {0}, 
+    [Posts].[IsHighlighted] = {1}
+WHERE [Posts].[Id] = 1;", sql, false, true, false);
+            }
+        }
+
+        [Fact]
+        public void update_with_table_schema_from_data_annotation()
+        {
+            using (var db = new DataAnnotationContext())
+            {
+                var sql = db.Products
+                    .Where(x => x.Id == 1)
+                    .SetField(x => x.Name).WithValue("some name")
+                    .SetField(x => x.Description).WithValue("some description")
+                    .GenerateBulkUpdateSql();
+
+                Assert.Equal(@"UPDATE [someAttributeSchema].[Products]
+SET [Products].[Name] = {0}, 
+    [Products].[Description] = {1}
+WHERE [Products].[Id] = 1;", sql, false, true, false);
+            }
+        }
     }
 }
