@@ -10,12 +10,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
     public class DefaultFieldParser : IFieldParser
     {
-        private static FieldInfo EntityTypesField = typeof(Model).GetTypeInfo().DeclaredFields.Single(x => x.Name == "_entityTypes");
+        private static FieldInfo EntityTypesField => typeof(Model).GetRuntimeFields().Single(x => x.Name == "_entityTypes");
 
         public DefaultFieldParser(ICurrentDbContext CurrentDbContext, ISqlGenerationHelper SqlGenerationHelper, IDbSetFinder DbSetFinder)
         {
@@ -56,15 +57,15 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             return sqlGenerationHelper.DelimitIdentifier(field.Table);
         }
 
-        protected virtual string GetTableName(EntityType type)
+        protected virtual string GetTableName(IEntityType type)
         {
             string tableName;
             var anno = type.FindAnnotation("Relational:TableName");
             if (anno != null)
-                tableName = anno.Value.ToString();
+                tableName = anno.Value?.ToString();
             else
             {
-                var prop = dbSetFinder.FindSets(context).SingleOrDefault(y => y.ClrType == type.ClrType);
+                var prop = dbSetFinder.FindSets(context.GetType()).SingleOrDefault(y => y.ClrType == type.ClrType);
                 if (!prop.Equals(default(DbSetProperty)))
                     tableName = prop.Name;
                 else
@@ -73,20 +74,20 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             return tableName;
         }
 
-        protected virtual string GetSchemaName(EntityType type)
+        protected virtual string GetSchemaName(IEntityType type)
         {
             string schema = null;
 
             // first, try to get schema from fluent API or data annotation
             IAnnotation anno = type.FindAnnotation("Relational:Schema");
             if (anno != null)
-                schema = anno.Value.ToString();
+                schema = anno.Value?.ToString();
             if (schema == null)
             {
                 // otherwise, try to get schema from context default
                 anno = context.Model.FindAnnotation("Relational:DefaultSchema");
                 if (anno != null)
-                    schema = anno.Value.ToString();
+                    schema = anno.Value?.ToString();
             }
             // TODO: ideally, switch to `et.Relational().Schema`, to cover all cases at once
 
@@ -104,8 +105,8 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 throw new ArgumentException("Too many parameters in the expression.");
             }
             var param = exp.Parameters.Single();
-            var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
-            var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
+            var entities = context.Model.GetEntityTypes();
+            var et = entities.Single(x => x.ClrType == typeof(TEntity));
             ret.Table = GetTableName(et);
             ret.Schema = GetSchemaName(et);
 

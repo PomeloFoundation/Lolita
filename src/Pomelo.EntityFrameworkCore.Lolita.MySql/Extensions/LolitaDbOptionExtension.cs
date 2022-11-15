@@ -3,19 +3,31 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Pomelo.EntityFrameworkCore.Lolita.Update;
 using Pomelo.EntityFrameworkCore.Lolita.Delete;
+using Pomelo.EntityFrameworkCore.Lolita.Common;
 
 namespace Microsoft.EntityFrameworkCore
 {
     public class MySqlLolitaDbOptionExtension : IDbContextOptionsExtension
     {
-        public string LogFragment => "Pomelo.EFCore.Lolita";
+        private DbContextOptionsExtensionInfo info;
 
-        public bool ApplyServices(IServiceCollection services)
+        public DbContextOptionsExtensionInfo Info
+        {
+            get
+            {
+                if (info == null)
+                {
+                    info = new LolitaDbContextOptionsExtensionInfo(this, "Pomelo.EFCore.Lolita.MySql", 478646435);
+                }
+                return info;
+            }
+        }
+
+
+        public void ApplyServices(IServiceCollection services)
         {
             services
                 .AddScoped<ISetFieldSqlGenerator, MySqlSetFieldSqlGenerator>();
-
-            return true;
         }
 
         public long GetServiceProviderHashCode()

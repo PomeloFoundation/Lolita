@@ -1,13 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>2.0.0</VersionPrefix>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <NetStandardImplicitPackageVersion>2.0.0-*</NetStandardImplicitPackageVersion>
+    <VersionPrefix>6.0.0</VersionPrefix>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>Pomelo.EntityFrameworkCore.Lolita.MySql</AssemblyName>
     <PackageId>Pomelo.EntityFrameworkCore.Lolita.MySql</PackageId>
     <PackageTags>Entity Framework Core;Extensions;Bulk Update;Bulk Delete</PackageTags>
-    <PackageIconUrl>http://www.1234.sh/assets/Shared/pomelofoundation.png</PackageIconUrl>
+    <PackageIconUrl>https://avatars.githubusercontent.com/u/118060120</PackageIconUrl>
     <PackageProjectUrl>https://github.com/PomeloFoundation/Lolita</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/PomeloFoundation/Lolita/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>

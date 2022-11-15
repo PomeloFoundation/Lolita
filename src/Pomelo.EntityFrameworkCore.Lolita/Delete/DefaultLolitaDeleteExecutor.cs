@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Pomelo.EntityFrameworkCore.Lolita.Common;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Delete
 {
@@ -29,15 +32,15 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
         private IDbSetFinder dbSetFinder;
         private DbContext context;
 
-        protected virtual string ParseTableName(EntityType type)
+        protected virtual string ParseTableName(IEntityType type)
         {
             string tableName;
             var anno = type.FindAnnotation("Relational:TableName");
             if (anno != null)
-                tableName = anno.Value.ToString();
+                tableName = anno.Value?.ToString();
             else
             {
-                var prop = dbSetFinder.FindSets(context).SingleOrDefault(y => y.ClrType == type.ClrType);
+                var prop = dbSetFinder.FindSets(context.GetType()).SingleOrDefault(y => y.ClrType == type.ClrType);
                 if (!prop.Equals(default(DbSetProperty)))
                     tableName = prop.Name;
                 else
@@ -46,25 +49,25 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
             return tableName;
         }
 
-        protected virtual string GetTableName(EntityType et)
+        protected virtual string GetTableName(IEntityType et)
         {
             return sqlGenerationHelper.DelimitIdentifier(ParseTableName(et));
         }
 
-        protected virtual string GetFullTableName(EntityType et)
+        protected virtual string GetFullTableName(IEntityType et)
         {
             string schema = null;
 
             // first, try to get schema from fluent API or data annotation
             IAnnotation anno = et.FindAnnotation("Relational:Schema");
             if (anno != null)
-                schema = anno.Value.ToString();
+                schema = anno.Value?.ToString();
             if (schema == null)
             {
                 // otherwise, try to get schema from context default
                 anno = context.Model.FindAnnotation("Relational:DefaultSchema");
                 if (anno != null)
-                    schema = anno.Value.ToString();
+                    schema = anno.Value?.ToString();
             }
             // TODO: ideally, switch to `et.Relational().Schema`, covering all cases
             if (schema != null)
@@ -77,41 +80,44 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
         {
             var sb = new StringBuilder("DELETE FROM ");
             var model = lolita.ElementType;
-            var visitor = lolita.CompileQuery();
 
-            var entities = (IDictionary<string, EntityType>)EntityTypesField.GetValue(context.Model);
-            var et = entities.Where(x => x.Value.ClrType == typeof(TEntity)).Single().Value;
+            var entities = context.Model.GetEntityTypes();
+            var et = entities.Where(x => x.ClrType == typeof(TEntity)).Single();
 
             var table = GetTableName(et);
             var fullTable = GetFullTableName(et);
             sb.Append(fullTable)
                 .AppendLine()
-                .Append(ParseWhere(visitor, table))
+                .Append(ParseWhere(lolita, table))
                 .Append(sqlGenerationHelper.StatementTerminator);
 
             return sb.ToString();
         }
 
-        protected virtual string ParseWhere(RelationalQueryModelVisitor visitor, string Table)
+        protected virtual string ParseWhere<TEntity>(IQueryable<TEntity> query, string table)
         {
-            if (visitor == null || visitor.Queries.Count == 0)
+            if (query == null)
                 return "";
-            var sql = visitor.Queries.First().ToString();
+            var sql = query.ToQueryString();
             var pos = sql.IndexOf("WHERE");
             if (pos < 0)
                 return "";
-            return sql.Substring(pos)
-                .Replace(sqlGenerationHelper.DelimitIdentifier(visitor.CurrentParameter.Name), Table);
+
+            var line = sql.Split('\n').First(x => x.Contains("FROM") && x.Contains("AS"));
+            var splited = line.Split(' ');
+            var currentParameter = splited[3].Trim();
+            var ret = sql.Substring(pos).Replace(currentParameter, table);
+            return ret;
         }
 
         public virtual int Execute(DbContext db, string sql)
         {
-            return db.Database.ExecuteSqlCommand(sql);
+            return db.Database.ExecuteSqlRaw(sql);
         }
 
         public Task<int> ExecuteAsync(DbContext db, string sql, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return db.Database.ExecuteSqlCommandAsync(sql, cancellationToken);
+            return db.Database.ExecuteSqlRawAsync(sql, cancellationToken);
         }
     }
 }
