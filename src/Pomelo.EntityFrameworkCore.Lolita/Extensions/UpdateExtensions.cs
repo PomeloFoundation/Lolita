@@ -33,7 +33,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             var executor = self.Query.GetService<ILolitaUpdateExecutor>();
             var context = self.Query.GetService<ICurrentDbContext>().Context;
-            return executor.ExecuteAsync(context, self.GenerateBulkUpdateSql(), cancellationToken, self.Parameters.ToArray());
+            return executor.ExecuteAsync(context, self.GenerateBulkUpdateSql(), self.Parameters.ToArray(), cancellationToken);
         }
     }
 }

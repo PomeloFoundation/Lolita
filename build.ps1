@@ -6,6 +6,7 @@ $directories = dir
 For ($i = 0; $i -lt $directories.Count; ++$i) {
     $project = Join-Path $src $directories[$i].Name
     Set-Location $project
+    dotnet clean
     dotnet pack -c Release
 }
 

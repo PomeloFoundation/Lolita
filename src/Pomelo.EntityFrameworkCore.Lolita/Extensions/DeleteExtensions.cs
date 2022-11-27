@@ -32,7 +32,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             var executor = self.GetService<ILolitaDeleteExecutor>();
             var context = self.GetService<ICurrentDbContext>().Context;
-            return executor.ExecuteAsync(context, self.GenerateBulkDeleteSql(), cancellationToken);
+            return executor.ExecuteAsync(context, self.GenerateBulkDeleteSql(), cancellationToken: cancellationToken);
         }
     }
 }
