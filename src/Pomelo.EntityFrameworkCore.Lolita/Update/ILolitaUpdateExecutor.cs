@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
     public interface ILolitaUpdateExecutor
     {
-        string GenerateSql<TEntity>(LolitaSetting<TEntity> lolita, IQueryable<TEntity> query) where TEntity : class, new();
+        string GenerateSql<TEntity>(LolitaSetting<TEntity> lolita, IQueryable<TEntity> query, out IEnumerable<object> parameters) where TEntity : class, new();
 
         int Execute(DbContext db, string sql, object[] param);
 

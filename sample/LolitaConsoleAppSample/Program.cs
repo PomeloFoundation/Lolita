@@ -75,8 +75,9 @@ namespace LolitaConsoleAppSample
 
             db.SaveChanges();
 
+            var uid = 1;
             var row_updated = db.Articles
-                .Where(x => x.User.Id == 1)
+                .Where(x => x.User.Id == uid)
                 .Where(x => DateTime.UtcNow >= x.Time)
                 .SetField(x => x.Title).Prepend("[old] ")
                 .SetField(x => x.IsPinned).WithValue(true)

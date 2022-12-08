@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -76,9 +77,19 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
                 return sqlGenerationHelper.DelimitIdentifier(ParseTableName(et));
         }
 
-        public virtual string GenerateSql<TEntity>(IQueryable<TEntity> lolita) where TEntity : class, new()
+        public virtual string GenerateSql<TEntity>(IQueryable<TEntity> lolita, out IEnumerable<object> parameters) where TEntity : class, new()
         {
-            var sb = new StringBuilder("DELETE FROM ");
+            var executed = lolita.Provider.Execute<IEnumerable>(lolita.Expression);
+            var relationalQueryContext = executed.GetType().GetRuntimeFields().FirstOrDefault(x => x.Name == "_relationalQueryContext")?.GetValue(executed);
+            if (relationalQueryContext == null)
+            {
+                throw new InvalidOperationException("The query is not a EF Core query.");
+            }
+
+            var _parameters = (Dictionary<string, object>)relationalQueryContext.GetType().GetRuntimeProperties().FirstOrDefault(x => x.Name == "ParameterValues")?.GetValue(relationalQueryContext);
+            parameters = _parameters.Values;
+
+            var sb = new StringBuilder();
             var model = lolita.ElementType;
 
             var entities = context.Model.GetEntityTypes();
@@ -86,16 +97,87 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
 
             var table = GetTableName(et);
             var fullTable = GetFullTableName(et);
-            sb.Append(fullTable)
+            var where = ParseWhere(lolita, table, out var currentParameter);
+            var innerJoins = ParseInnerJoins(lolita, table, currentParameter, out var joinnedTables);
+            sb.Append("DELETE ")
+                .Append(string.Join(", ", new[] { fullTable }.Concat(joinnedTables) ))
+                .Append(" FROM ")
+                .Append(fullTable)
                 .AppendLine()
-                .Append(ParseWhere(lolita, table))
+                .Append(innerJoins)
+                .Append(where)
                 .Append(sqlGenerationHelper.StatementTerminator);
 
-            return sb.ToString();
+            var ret = sb.ToString();
+            var i = 0;
+            foreach (var param in _parameters)
+            {
+                var appendIndex = i;
+                var src = sqlGenerationHelper.GenerateParameterNamePlaceholder(param.Key);
+                ret = ret.Replace(src, $"{{{appendIndex}}}");
+                ++i;
+            }
+
+            return ret;
         }
 
-        protected virtual string ParseWhere<TEntity>(IQueryable<TEntity> query, string table)
+        protected virtual string ParseInnerJoins<TEntity>(IQueryable<TEntity> query, string table, string currentParameter, out IEnumerable<string> joinnedTables)
         {
+            var _joinnedTables = new List<string>();
+            joinnedTables = _joinnedTables;
+            if (query == null)
+            {
+                return "";
+            }
+            var sql = query.ToQueryString();
+            var innerJoinPos = sql.IndexOf("INNER JOIN");
+            if (innerJoinPos < 0)
+            {
+                return "";
+            }
+            var wherePos = sql.IndexOf("WHERE");
+
+            if (wherePos >= 0)
+            {
+                sql = sql
+                    .Substring(innerJoinPos, wherePos - innerJoinPos)
+                    .Replace(currentParameter, table);
+            }
+            else
+            {
+                sql = sql
+                    .Substring(innerJoinPos)
+                    .Replace(currentParameter, table);
+            }
+
+            var splited = sql
+                .Replace("\r", "")
+                .Replace("\n", " ")
+                .Split(' ');
+
+            var asIndexes = new List<int>();
+            for (var i = 0; i < splited.Length; ++i)
+            {
+                if (splited[i].ToUpper() == "AS")
+                {
+                    asIndexes.Add(i);
+                }
+            }
+
+            foreach (var index in asIndexes)
+            {
+                if (index + 1 < splited.Length)
+                {
+                    _joinnedTables.Add(splited[index + 1]);
+                }
+            }
+
+            return sql;
+        }
+
+        protected virtual string ParseWhere<TEntity>(IQueryable<TEntity> query, string table, out string currentParameter)
+        {
+            currentParameter = null;
             if (query == null)
                 return "";
             var sql = query.ToQueryString();
@@ -105,19 +187,20 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
 
             var line = sql.Split('\n').First(x => x.Contains("FROM") && x.Contains("AS"));
             var splited = line.Split(' ');
-            var currentParameter = splited[3].Trim();
+            var _currentParameter = splited[3].Trim();
+            currentParameter = _currentParameter;
             var ret = sql.Substring(pos).Replace(currentParameter, table);
             return ret;
         }
 
-        public virtual int Execute(DbContext db, string sql)
+        public virtual int Execute(DbContext db, string sql, object[] parameters)
         {
-            return db.Database.ExecuteSqlRaw(sql);
+            return db.Database.ExecuteSqlRaw(sql, parameters);
         }
 
-        public Task<int> ExecuteAsync(DbContext db, string sql, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<int> ExecuteAsync(DbContext db, string sql, object[] parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return db.Database.ExecuteSqlRawAsync(sql, cancellationToken);
+            return db.Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
         }
     }
 }

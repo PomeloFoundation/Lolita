@@ -22,5 +22,5 @@ New-Item -Path $nupkg -ItemType Directory
 For ($i = 0; $i -lt $files.Count; ++$i) {
     $nupkgName = [System.IO.Path]::GetFileName($files[$i])
     $nupkgFullPath = Join-Path $nupkg $nupkgName
-    Copy-Item -Path $files[$i] -Destination $nupkgFullPath
+    Move-Item -Path $files[$i] -Destination $nupkgFullPath -Force
 }

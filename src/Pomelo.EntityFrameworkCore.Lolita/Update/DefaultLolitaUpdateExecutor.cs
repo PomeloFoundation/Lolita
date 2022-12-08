@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Pomelo.EntityFrameworkCore.Lolita.Common;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Pomelo.EntityFrameworkCore.Lolita.Update
 {
@@ -28,8 +32,19 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
         private IDbSetFinder dbSetFinder;
         private DbContext context;
 
-        public virtual string GenerateSql<TEntity>(LolitaSetting<TEntity> lolita, IQueryable<TEntity> query) where TEntity : class, new()
+        public virtual string GenerateSql<TEntity>(LolitaSetting<TEntity> lolita, IQueryable<TEntity> query, out IEnumerable<object> parameters) where TEntity : class, new()
         {
+            var executed = query.Provider.Execute<IEnumerable>(query.Expression);
+            var relationalQueryContext = executed.GetType().GetRuntimeFields().FirstOrDefault(x => x.Name == "_relationalQueryContext")?.GetValue(executed);
+            if (relationalQueryContext == null)
+            {
+                throw new InvalidOperationException("The query is not a EF Core query.");
+            }
+
+            var _parameters = (Dictionary<string, object>)relationalQueryContext.GetType().GetRuntimeProperties().FirstOrDefault(x => x.Name == "ParameterValues")?.GetValue(relationalQueryContext);
+            parameters = _parameters.Values;
+            var start = lolita.Operations.Count();
+
             var sb = new StringBuilder("UPDATE ");
             var where = ParseWhere(query, lolita.ShortTable, out var currentParameter);
             sb.Append(lolita.FullTable)
@@ -41,7 +56,16 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
                 .Append(where)
                 .Append(sqlGenerationHelper.StatementTerminator);
 
-            return sb.ToString();
+            var ret = sb.ToString();
+            var i = 0;
+            foreach (var param in _parameters)
+            {
+                var appendIndex = i + start;
+                var src = sqlGenerationHelper.GenerateParameterNamePlaceholder(param.Key);
+                ret = ret.Replace(src, $"{{{appendIndex}}}");
+                ++i;
+            }
+            return ret;
         }
 
         protected virtual string ParseInnerJoins<TEntity>(IQueryable<TEntity> query, string table, string currentParameter)
