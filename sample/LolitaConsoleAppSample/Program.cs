@@ -14,7 +14,11 @@ namespace LolitaConsoleAppSample
             collection.AddDbContext<LolitaContext>(x => 
             {
                 x.UseMySql("server=localhost;database=lolita;uid=root;pwd=123456", 
-                    ServerVersion.AutoDetect("server=localhost;database=lolita;uid=root;pwd=123456"));
+                    ServerVersion.AutoDetect("server=localhost;database=lolita;uid=root;pwd=123456"),
+                    options =>
+                    {
+                        options.UseNewtonsoftJson();
+                    });
                 x.UseMySqlLolita();
             });
             var services = collection.BuildServiceProvider();
@@ -61,7 +65,11 @@ namespace LolitaConsoleAppSample
                 UserId = 2,
                 Content = "Test Content",
                 IsPinned = false,
-                Time = DateTime.UtcNow
+                Time = DateTime.UtcNow,
+                Attributes = new System.Collections.Generic.Dictionary<string, object> 
+                {
+                    ["Test"] = true
+                }
             });
 
             db.Articles.Add(new Article
@@ -84,6 +92,10 @@ namespace LolitaConsoleAppSample
                 .Update();
             
             var row_updated2 = db.Articles
+                .Where(x => EF.Functions.JsonExtract<bool>(x.Attributes, "$.Test"))
+                .Delete();
+
+            var row_updated3 = db.Articles
                 .Where(x => db.Users.Where(y => y.Id % 2 == 0).Select(y => y.Id).Contains(x.Id))
                 .Delete();
 

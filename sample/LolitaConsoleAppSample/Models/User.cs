@@ -1,4 +1,7 @@
-﻿namespace LolitaConsoleAppSample.Models
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace LolitaConsoleAppSample.Models
 {
     public class User
     {

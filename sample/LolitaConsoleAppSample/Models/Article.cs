@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LolitaConsoleAppSample.Models
@@ -19,5 +20,8 @@ namespace LolitaConsoleAppSample.Models
         public int UserId { get; set; }
 
         public virtual User User { get; set; }
+
+        [Column(TypeName = "json")]
+        public Dictionary<string, object> Attributes { get; set; }
     }
 }

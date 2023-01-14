@@ -13,5 +13,15 @@ namespace LolitaConsoleAppSample.Models
         public DbSet<User> Users { get; set; }
 
         public DbSet<Article> Articles { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Article>(e =>
+            {
+                e.Property(x => x.Attributes).HasColumnType("json");
+            });
+        }
     }
 }

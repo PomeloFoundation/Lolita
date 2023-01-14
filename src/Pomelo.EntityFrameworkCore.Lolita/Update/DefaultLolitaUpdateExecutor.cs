@@ -42,7 +42,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Update
             }
 
             var _parameters = (Dictionary<string, object>)relationalQueryContext.GetType().GetRuntimeProperties().FirstOrDefault(x => x.Name == "ParameterValues")?.GetValue(relationalQueryContext);
-            parameters = _parameters.Values;
+            parameters = _parameters.Values.Where(x => !(x is DbFunctions));
             var start = lolita.Operations.Count();
 
             var sb = new StringBuilder("UPDATE ");

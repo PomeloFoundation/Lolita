@@ -87,7 +87,7 @@ namespace Pomelo.EntityFrameworkCore.Lolita.Delete
             }
 
             var _parameters = (Dictionary<string, object>)relationalQueryContext.GetType().GetRuntimeProperties().FirstOrDefault(x => x.Name == "ParameterValues")?.GetValue(relationalQueryContext);
-            parameters = _parameters.Values;
+            parameters = _parameters.Values.Where(x => !(x is DbFunctions));
 
             var sb = new StringBuilder();
             var model = lolita.ElementType;
